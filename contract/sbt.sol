@@ -4,9 +4,9 @@ pragma solidity 0.8.20;
 import "@openzeppelin/contracts/token/ERC1155/ERC1155.sol";
 
 contract My1155Token is ERC1155 {
-    address owner;
+    address public owner;
 
-    constructor() ERC1155("") {
+    constructor() ERC1155("") payable {
         owner = msg.sender;
     }
 
@@ -53,7 +53,7 @@ contract My1155Token is ERC1155 {
         uint256 id,
         uint256 amount
     ) public onlyOwner {
-        require(tokenIDInfo[id].totalamount > 0, "TokenID not Initialized");
+        require(tokenIDInfo[id].totalamount != 0, "TokenID not Initialized");
         require(
             tokenIDInfo[id].minted + amount <= tokenIDInfo[id].totalamount,
             "Not Enough TokenID left"
@@ -66,9 +66,9 @@ contract My1155Token is ERC1155 {
         address[] memory account,
         uint256[] memory id,
         uint256[] memory amount
-    ) public onlyOwner {
+    ) external onlyOwner {
         require(
-            account.length > 0 && account.length == amount.length,
+            account.length != 0 && account.length == amount.length,
             "Need valid account/amount list and Equal length"
         );
         if (id.length == 1) {
@@ -86,7 +86,7 @@ contract My1155Token is ERC1155 {
         }
     }
 
-    function burn(uint256 id, uint256 value) public virtual {
+    function burn(uint256 id, uint256 value) external virtual {
         tokenIDInfo[id].minted -= value;
         _burn(msg.sender, id, value);
     }
@@ -135,20 +135,18 @@ contract My1155Token is ERC1155 {
         onlyOwner
     {
         require(
-            tokenIDInfo[tokenid].totalamount > 0,
+            tokenIDInfo[tokenid].totalamount != 0,
             "TokenID not Initialized"
         );
         tokenIDInfo[tokenid].totalamount = totalamount;
-        //  emit UpdateTokenid(tokenid, totalamount);
     }
 
     function updateURL(uint256 tokenid, string memory url) external onlyOwner {
         require(
-            tokenIDInfo[tokenid].totalamount > 0,
+            tokenIDInfo[tokenid].totalamount != 0,
             "TokenID not Initialized"
         );
         tokenIDInfo[tokenid].url = url;
-        //emit UpdateUrl(tokenid, url);
     }
 
     function updateNameSymbol(
@@ -157,12 +155,11 @@ contract My1155Token is ERC1155 {
         string memory symbol
     ) external onlyOwner {
         require(
-            tokenIDInfo[tokenid].totalamount > 0,
+            tokenIDInfo[tokenid].totalamount != 0,
             "TokenID not Initialized"
         );
         tokenIDInfo[tokenid].name = name;
         tokenIDInfo[tokenid].symbol = symbol;
-        //emit Updatenamesymbol(tokenid, name, symbol);
     }
 
     function uri(uint256 id)
