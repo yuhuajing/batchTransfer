@@ -74,8 +74,6 @@ func buildTx(prikey string) *bind.TransactOpts {
 func buildTxByDecryKeyStore(ksfile string, pass string) *bind.TransactOpts {
 	client := buildConn()
 	defer client.Close()
-	// ksfile:= "/opt/etherData/keystore/UTC--2023-09-08T03-15-52.105540382Z--596e8070f9b3c607c0d309ed904324844100029a"
-	// pass:= "yu201219jing"
 	privateKey:= getPrivatefromKeystore(ksfile, pass)
 
 	publicKey := privateKey.Public()
@@ -101,13 +99,25 @@ func buildTxByDecryKeyStore(ksfile string, pass string) *bind.TransactOpts {
 	return auth
 }
 
-func buildTxByUnlockKeyStore(ksfile string, pass string) *bind.TransactOpts {
+func setTokeninfo(Txauth *bind.TransactOpts, instance *sbt.Sbt, id int64, amount int64) {
+	// setTokenInfo
+	tokenid := big.NewInt(id)
+	totalamount := big.NewInt(amount)
+	name := "clayert"
+	symbol := "clt"
+	url := "https://ipfs.io/ipfs/QmW948aN4Tjh4eLkAAo8os1AcM2FJjA46qtaEfFAnyNYzY"
+
+	tx, err := instance.SettokenIDInfo(Txauth, tokenid, totalamount, name, symbol, url)
+	if err != nil {
+		fmt.Println("error creating tx")
+		log.Fatal(err)
+	}
+	fmt.Printf("tx sent: %s\n", tx.Hash().Hex())
+}
+
+func setTokeninfoWithUnlock( instance *sbt.Sbt, ksfile string, pass string, id int64, amount int64) {
 	client := buildConn()
 	defer client.Close()
-
-	//ksfile := "/opt/etherData/keystore/UTC--2023-09-08T03-15-52.105540382Z--596e8070f9b3c607c0d309ed904324844100029a"
-	//pass:= "yu201219jing"
-
 	acc:=accounts.Account{
 		Address:common.HexToAddress("0x596e8070F9B3C607c0d309ED904324844100029A"),
 	}
@@ -128,10 +138,6 @@ func buildTxByUnlockKeyStore(ksfile string, pass string) *bind.TransactOpts {
 	auth.Value = big.NewInt(0)       // in wei
 	auth.GasLimit = uint64(30000000) // in units
 	auth.GasPrice = gasPrice         //big.NewInt(int64(8))
-	return auth
-}
-
-func setTokeninfo(Txauth *bind.TransactOpts, instance *sbt.Sbt, id int64, amount int64) {
 	// setTokenInfo
 	tokenid := big.NewInt(id)
 	totalamount := big.NewInt(amount)
@@ -139,7 +145,7 @@ func setTokeninfo(Txauth *bind.TransactOpts, instance *sbt.Sbt, id int64, amount
 	symbol := "clt"
 	url := "https://ipfs.io/ipfs/QmW948aN4Tjh4eLkAAo8os1AcM2FJjA46qtaEfFAnyNYzY"
 
-	tx, err := instance.SettokenIDInfo(Txauth, tokenid, totalamount, name, symbol, url)
+	tx, err := instance.SettokenIDInfo(auth, tokenid, totalamount, name, symbol, url)
 	if err != nil {
 		fmt.Println("error creating tx")
 		log.Fatal(err)
@@ -178,7 +184,9 @@ func main() {
 	defer client.Close()
 	//prikey := "bebb5b73e288c580a6cee5070929ab3ff8985422d7a0bc45938faae5332e2e2f"
 	// Txauth := buildTx(prikey)
-	Txauth :=buildTxByUnlockKeyStore("/opt/etherData/keystore/UTC--2023-09-08T03-15-52.105540382Z--596e8070f9b3c607c0d309ed904324844100029a","yu201219jing")
+	ketstore:="/opt/etherData/keystore/UTC--2023-09-08T03-15-52.105540382Z--596e8070f9b3c607c0d309ed904324844100029a"
+	pass:="yu201219jing"
+	// Txauth :=buildTxByUnlockKeyStore(,)
 	// Txauth :=buildTxByDecryKeyStore("/opt/etherData/keystore/UTC--2023-09-08T03-15-52.105540382Z--596e8070f9b3c607c0d309ed904324844100029a","yu201219jing")
 	scaddress := common.HexToAddress("0xe579aBE4a3B4BaB0b8E07918A3A95CB7cdD3F610") // Smart Contract Address
 	instance, err := sbt.NewSbt(scaddress, client)
@@ -186,7 +194,10 @@ func main() {
 		fmt.Println("error creating instance")
 		log.Fatal(err)
 	}
-	setTokeninfo(Txauth, instance,2,200)
+	//setTokeninfo(Txauth, instance,2,200)
 	// mint(Txauth, instance)
 	// batchmint(Txauth, instance)
+
+	setTokeninfoWithUnlock( instance,ketstore,pass,2,200)
+
 }
