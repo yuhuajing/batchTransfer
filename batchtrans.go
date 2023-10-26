@@ -40,14 +40,14 @@ func buildTx() *bind.TransactOpts {
 	// fromAddress := crypto.PubkeyToAddress(*publicKeyECDSA)
 
 	ks := keystore.NewPlaintextKeyStore("/opt/etherData/keystore/UTC--2023-09-08T03-15-52.105540382Z--596e8070f9b3c607c0d309ed904324844100029a")
-	fmt.Println(ks.Wallets())
+	
 	acc:=accounts.Account{
 		Address:common.HexToAddress("0x596e8070F9B3C607c0d309ED904324844100029A"),
 
 	}
 
 	ks.Unlock(acc,"yu201219jing")
-	
+	fmt.Println(ks.Wallets())
 
 	// accounts := ks.Accounts()
 	// if len(accounts) > 0{
