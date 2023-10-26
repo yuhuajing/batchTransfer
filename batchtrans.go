@@ -191,7 +191,7 @@ func main() {
 	defer client.Close()
 	//prikey := "bebb5b73e288c580a6cee5070929ab3ff8985422d7a0bc45938faae5332e2e2f"
 	// Txauth := buildTx(prikey)
-	ketstore:="/opt/etherData/keystore/UTC--2023-09-08T03-15-52.105540382Z--596e8070f9b3c607c0d309ed904324844100029a"
+	ketstore:="~/.ethereum/keystore/UTC--2023-09-08T03-15-52.105540382Z--596e8070f9b3c607c0d309ed904324844100029a"
 	pass:="yu201219jing"
 	// Txauth :=buildTxByUnlockKeyStore(,)
 	// Txauth :=buildTxByDecryKeyStore("/opt/etherData/keystore/UTC--2023-09-08T03-15-52.105540382Z--596e8070f9b3c607c0d309ed904324844100029a","yu201219jing")
