@@ -12,7 +12,7 @@ import (
 	"math/big"
 	"io/ioutil"
 
-	//"github.com/ethereum/go-ethereum/accounts"
+	"github.com/ethereum/go-ethereum/accounts"
 	"github.com/ethereum/go-ethereum/accounts/abi/bind"
 	"github.com/ethereum/go-ethereum/accounts/keystore"
 	"github.com/ethereum/go-ethereum/common"
@@ -30,13 +30,12 @@ func buildConn() *ethclient.Client {
 }
 
 func getPrivatefromKeystore(ksfile string, pass string) *ecdsa.PrivateKey {
-	keyjson, err := ioutil.ReadFile(ksfile) //"/opt/etherData/keystore/UTC--2023-09-08T03-15-52.105540382Z--596e8070f9b3c607c0d309ed904324844100029a"
-	key, err := keystore.DecryptKey(keyjson, pass) //yu201219jing
+	keyjson, err := ioutil.ReadFile(ksfile) 
+	key, err := keystore.DecryptKey(keyjson, pass)
 	if err != nil {
 		panic(err)
 	}
 	return key.PrivateKey
-	//fromAddress := key.Address
 }
 
 func getPrivatefromPriKey(prikey string) *ecdsa.PrivateKey {
@@ -54,23 +53,37 @@ func buildTx(prikey string) *bind.TransactOpts {
 		log.Fatal("cannot assert type: publicKey is not of type *ecdsa.PublicKey")
 	}
 	fromAddress := crypto.PubkeyToAddress(*publicKeyECDSA)
+	nonce, err := client.PendingNonceAt(context.Background(), fromAddress)
+	if err != nil {
+		log.Fatal(err)
+	}
+	gasPrice, err := client.SuggestGasPrice(context.Background())
+	if err != nil {
+		log.Fatal(err)
+	}
+	auth := bind.NewKeyedTransactor(privateKey)
+	auth.Nonce = big.NewInt(int64(nonce))
+	auth.Value = big.NewInt(0)       // in wei
+	auth.GasLimit = uint64(80000000) // in units
+	auth.GasPrice = gasPrice         //big.NewInt(int64(8))
+	return auth
+}
 
 
 
-	// acc:=accounts.Account{
-	// 	Address:common.HexToAddress("0x596e8070F9B3C607c0d309ED904324844100029A"),
+func buildTxByDecryKeyStore(ksfile string, pass string) *bind.TransactOpts {
+	client := buildConn()
+	defer client.Close()
+	// ksfile:= "/opt/etherData/keystore/UTC--2023-09-08T03-15-52.105540382Z--596e8070f9b3c607c0d309ed904324844100029a"
+	// pass:= "yu201219jing"
+	privateKey:= getPrivatefromKeystore(ksfile, pass)
 
-	// }
-
-	// ks.Unlock(acc,"yu201219jing")
-	// fmt.Println(ks.Wallets())
-
-	// accounts := ks.Accounts()
-	// if len(accounts) > 0{
-	// 	fmt.Println(accounts[0].Address)
-	// }
-	// fromAddress := common.HexToAddress("0x596e8070F9B3C607c0d309ED904324844100029A")
-	//fmt.Println(fromAddress)
+	publicKey := privateKey.Public()
+	publicKeyECDSA, ok := publicKey.(*ecdsa.PublicKey)
+	if !ok {
+		log.Fatal("cannot assert type: publicKey is not of type *ecdsa.PublicKey")
+	}
+	fromAddress := crypto.PubkeyToAddress(*publicKeyECDSA)
 
 	nonce, err := client.PendingNonceAt(context.Background(), fromAddress)
 	if err != nil {
@@ -80,8 +93,37 @@ func buildTx(prikey string) *bind.TransactOpts {
 	if err != nil {
 		log.Fatal(err)
 	}
-	// auth := bind.NewKeyedTransactor(privateKey)
-	auth := bind.NewKeyedTransactor(privateKey)//NewKeyStoreTransactorWithChainID(ks,acc,big.NewInt(int64(1)))//
+	auth := bind.NewKeyedTransactor(privateKey)
+	auth.Nonce = big.NewInt(int64(nonce))
+	auth.Value = big.NewInt(0)       // in wei
+	auth.GasLimit = uint64(80000000) // in units
+	auth.GasPrice = gasPrice         //big.NewInt(int64(8))
+	return auth
+}
+
+func buildTxByUnlockKeyStore(ksfile string, pass string) *bind.TransactOpts {
+	client := buildConn()
+	defer client.Close()
+
+	//ksfile := "/opt/etherData/keystore/UTC--2023-09-08T03-15-52.105540382Z--596e8070f9b3c607c0d309ed904324844100029a"
+	//pass:= "yu201219jing"
+
+	acc:=accounts.Account{
+		Address:common.HexToAddress("0x596e8070F9B3C607c0d309ED904324844100029A"),
+	}
+	ks := keystore.NewPlaintextKeyStore(ksfile)
+
+	ks.Unlock(acc,pass)
+
+	nonce, err := client.PendingNonceAt(context.Background(), acc.Address)
+	if err != nil {
+		log.Fatal(err)
+	}
+	gasPrice, err := client.SuggestGasPrice(context.Background())
+	if err != nil {
+		log.Fatal(err)
+	}
+	auth,_ := bind.NewKeyStoreTransactorWithChainID(ks,acc,big.NewInt(int64(1)))
 	auth.Nonce = big.NewInt(int64(nonce))
 	auth.Value = big.NewInt(0)       // in wei
 	auth.GasLimit = uint64(80000000) // in units
@@ -106,7 +148,6 @@ func setTokeninfo(Txauth *bind.TransactOpts, instance *sbt.Sbt) {
 }
 
 func mint(Txauth *bind.TransactOpts, instance *sbt.Sbt) {
-	// setTokenInfo
 	account := common.HexToAddress("")
 	id := big.NewInt(1)
 	amount := big.NewInt(20)
@@ -120,7 +161,6 @@ func mint(Txauth *bind.TransactOpts, instance *sbt.Sbt) {
 }
 
 func batchmint(Txauth *bind.TransactOpts, instance *sbt.Sbt) {
-	// setTokenInfo
 	account := []common.Address{common.HexToAddress("")}
 	id := []*big.Int{big.NewInt(1)}
 	amount := []*big.Int{big.NewInt(20)}
@@ -136,8 +176,9 @@ func batchmint(Txauth *bind.TransactOpts, instance *sbt.Sbt) {
 func main() {
 	client := buildConn()
 	defer client.Close()
-	prikey := "bebb5b73e288c580a6cee5070929ab3ff8985422d7a0bc45938faae5332e2e2f"
-	Txauth := buildTx(prikey)
+	//prikey := "bebb5b73e288c580a6cee5070929ab3ff8985422d7a0bc45938faae5332e2e2f"
+	// Txauth := buildTx(prikey)
+	Txauth :=buildTxByDecryKeyStore("/opt/etherData/keystore/UTC--2023-09-08T03-15-52.105540382Z--596e8070f9b3c607c0d309ed904324844100029a","yu201219jing")
 	scaddress := common.HexToAddress("0xe579aBE4a3B4BaB0b8E07918A3A95CB7cdD3F610") // Smart Contract Address
 	instance, err := sbt.NewSbt(scaddress, client)
 	if err != nil {
