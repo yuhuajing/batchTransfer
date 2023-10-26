@@ -5,20 +5,22 @@ package main
 
 import (
 	"context"
-	"crypto/ecdsa"
+	//"crypto/ecdsa"
 	"fmt"
 	"log"
 	"main/sbt"
 	"math/big"
 
+	"github.com/ethereum/go-ethereum/accounts"
 	"github.com/ethereum/go-ethereum/accounts/abi/bind"
+	"github.com/ethereum/go-ethereum/accounts/keystore"
 	"github.com/ethereum/go-ethereum/common"
-	"github.com/ethereum/go-ethereum/crypto"
+	//"github.com/ethereum/go-ethereum/crypto"
 	"github.com/ethereum/go-ethereum/ethclient"
 )
 
 func buildConn() *ethclient.Client {
-	client, err := ethclient.Dial("http://localhost:8545")
+	client, err := ethclient.Dial("http://192.168.101.75:8545")
 	if err != nil {
 		fmt.Printf("Eth connect error:%s\n", err)
 		log.Fatal(err)
@@ -29,13 +31,24 @@ func buildConn() *ethclient.Client {
 func buildTx() *bind.TransactOpts {
 	client := buildConn()
 	defer client.Close()
-	privateKey, _ := crypto.HexToECDSA("bebb5b73e288c580a6cee5070929ab3ff8985422d7a0bc45938faae5332e2e2f")
-	publicKey := privateKey.Public()
-	publicKeyECDSA, ok := publicKey.(*ecdsa.PublicKey)
-	if !ok {
-		log.Fatal("cannot assert type: publicKey is not of type *ecdsa.PublicKey")
+	// privateKey, _ := crypto.HexToECDSA("bebb5b73e288c580a6cee5070929ab3ff8985422d7a0bc45938faae5332e2e2f")
+	// publicKey := privateKey.Public()
+	// publicKeyECDSA, ok := publicKey.(*ecdsa.PublicKey)
+	// if !ok {
+	// 	log.Fatal("cannot assert type: publicKey is not of type *ecdsa.PublicKey")
+	// }
+	//fromAddress := crypto.PubkeyToAddress(*publicKeyECDSA)
+
+	ks := keystore.NewPlaintextKeyStore("/opt/etherData/keystore/UTC--2023-09-08T03-15-52.105540382Z--596e8070f9b3c607c0d309ed904324844100029a")
+	acc:=accounts.Account{
+		Address:common.HexToAddress("0x2d8Fac7B7295A2aBf75D49A534b3a86920de51B2"),
+
 	}
-	fromAddress := crypto.PubkeyToAddress(*publicKeyECDSA)
+	ks.Unlock(acc,"yu201219jing")
+	accounts := ks.Accounts()
+	fromAddress := accounts[0].Address
+	fmt.Println(fromAddress)
+
 	nonce, err := client.PendingNonceAt(context.Background(), fromAddress)
 	if err != nil {
 		log.Fatal(err)
@@ -44,7 +57,8 @@ func buildTx() *bind.TransactOpts {
 	if err != nil {
 		log.Fatal(err)
 	}
-	auth := bind.NewKeyedTransactor(privateKey)
+
+	auth,_ := bind.NewKeyStoreTransactorWithChainID(ks,acc,big.NewInt(int64(1)))//NewKeyedTransactor(privateKey)
 	auth.Nonce = big.NewInt(int64(nonce))
 	auth.Value = big.NewInt(0)       // in wei
 	auth.GasLimit = uint64(80000000) // in units
@@ -54,7 +68,7 @@ func buildTx() *bind.TransactOpts {
 
 func setTokeninfo(Txauth *bind.TransactOpts, instance *sbt.Sbt) {
 	// setTokenInfo
-	tokenid := big.NewInt(1)
+	tokenid := big.NewInt(2)
 	totalamount := big.NewInt(5000)
 	name := "clayert"
 	symbol := "clt"
@@ -107,4 +121,6 @@ func main() {
 		log.Fatal(err)
 	}
 	setTokeninfo(Txauth, instance)
+	// mint(Txauth, instance)
+	// batchmint(Txauth, instance)
 }
