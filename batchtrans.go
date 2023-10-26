@@ -21,7 +21,7 @@ import (
 )
 
 func buildConn() *ethclient.Client {
-	client, err := ethclient.Dial("http://192.168.101.75:8545")
+	client, err := ethclient.Dial("http://localhost:8545")
 	if err != nil {
 		fmt.Printf("Eth connect error:%s\n", err)
 		log.Fatal(err)
@@ -178,14 +178,15 @@ func main() {
 	defer client.Close()
 	//prikey := "bebb5b73e288c580a6cee5070929ab3ff8985422d7a0bc45938faae5332e2e2f"
 	// Txauth := buildTx(prikey)
-	Txauth :=buildTxByDecryKeyStore("/opt/etherData/keystore/UTC--2023-09-08T03-15-52.105540382Z--596e8070f9b3c607c0d309ed904324844100029a","yu201219jing")
+	Txauth :=buildTxByUnlockKeyStore("/opt/etherData/keystore/UTC--2023-09-08T03-15-52.105540382Z--596e8070f9b3c607c0d309ed904324844100029a","yu201219jing")
+	// Txauth :=buildTxByDecryKeyStore("/opt/etherData/keystore/UTC--2023-09-08T03-15-52.105540382Z--596e8070f9b3c607c0d309ed904324844100029a","yu201219jing")
 	scaddress := common.HexToAddress("0xe579aBE4a3B4BaB0b8E07918A3A95CB7cdD3F610") // Smart Contract Address
 	instance, err := sbt.NewSbt(scaddress, client)
 	if err != nil {
 		fmt.Println("error creating instance")
 		log.Fatal(err)
 	}
-	setTokeninfo(Txauth, instance,1,200)
+	setTokeninfo(Txauth, instance,2,200)
 	// mint(Txauth, instance)
 	// batchmint(Txauth, instance)
 }
