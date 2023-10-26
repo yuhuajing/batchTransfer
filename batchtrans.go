@@ -69,8 +69,6 @@ func buildTx(prikey string) *bind.TransactOpts {
 	return auth
 }
 
-
-
 func buildTxByDecryKeyStore(ksfile string, pass string) *bind.TransactOpts {
 	client := buildConn()
 	defer client.Close()
@@ -122,8 +120,10 @@ func setTokeninfoWithUnlock( instance *sbt.Sbt, ksfile string, pass string, id i
 		Address:common.HexToAddress("0x596e8070F9B3C607c0d309ED904324844100029A"),
 	}
 	ks := keystore.NewPlaintextKeyStore(ksfile)
-
-	ks.Unlock(acc,pass)
+	err := ks.Unlock(acc,pass)
+	if err !=nil{
+		fmt.Println("ErrInUnlock: ",err)
+	}
 
 	nonce, err := client.PendingNonceAt(context.Background(), acc.Address)
 	if err != nil {
@@ -199,5 +199,4 @@ func main() {
 	// batchmint(Txauth, instance)
 
 	setTokeninfoWithUnlock( instance,ketstore,pass,2,200)
-
 }
