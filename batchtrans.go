@@ -20,7 +20,7 @@ import (
 )
 
 func buildConn() *ethclient.Client {
-	client, err := ethclient.Dial("http://192.168.101.75:8545")
+	client, err := ethclient.Dial("http://localhost:8545")
 	if err != nil {
 		fmt.Printf("Eth connect error:%s\n", err)
 		log.Fatal(err)
