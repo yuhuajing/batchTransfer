@@ -5,7 +5,7 @@ package main
 
 import (
 	"context"
-	//"crypto/ecdsa"
+	"crypto/ecdsa"
 	"fmt"
 	"log"
 	"main/sbt"
@@ -15,7 +15,7 @@ import (
 	"github.com/ethereum/go-ethereum/accounts/abi/bind"
 	"github.com/ethereum/go-ethereum/accounts/keystore"
 	"github.com/ethereum/go-ethereum/common"
-	//"github.com/ethereum/go-ethereum/crypto"
+	"github.com/ethereum/go-ethereum/crypto"
 	"github.com/ethereum/go-ethereum/ethclient"
 )
 
@@ -31,13 +31,13 @@ func buildConn() *ethclient.Client {
 func buildTx() *bind.TransactOpts {
 	client := buildConn()
 	defer client.Close()
-	// privateKey, _ := crypto.HexToECDSA("bebb5b73e288c580a6cee5070929ab3ff8985422d7a0bc45938faae5332e2e2f")
-	// publicKey := privateKey.Public()
-	// publicKeyECDSA, ok := publicKey.(*ecdsa.PublicKey)
-	// if !ok {
-	// 	log.Fatal("cannot assert type: publicKey is not of type *ecdsa.PublicKey")
-	// }
-	//fromAddress := crypto.PubkeyToAddress(*publicKeyECDSA)
+	privateKey, _ := crypto.HexToECDSA("bebb5b73e288c580a6cee5070929ab3ff8985422d7a0bc45938faae5332e2e2f")
+	publicKey := privateKey.Public()
+	publicKeyECDSA, ok := publicKey.(*ecdsa.PublicKey)
+	if !ok {
+		log.Fatal("cannot assert type: publicKey is not of type *ecdsa.PublicKey")
+	}
+	fromAddress := crypto.PubkeyToAddress(*publicKeyECDSA)
 
 	ks := keystore.NewPlaintextKeyStore("/opt/etherData/keystore/UTC--2023-09-08T03-15-52.105540382Z--596e8070f9b3c607c0d309ed904324844100029a")
 	acc:=accounts.Account{
@@ -46,8 +46,11 @@ func buildTx() *bind.TransactOpts {
 	}
 	ks.Unlock(acc,"yu201219jing")
 	accounts := ks.Accounts()
-	fromAddress := accounts[0].Address
-	fmt.Println(fromAddress)
+	if len(accounts) > 0{
+		fmt.Println(accounts[0].Address)
+	}
+	//fromAddress := accounts[0].Address
+	//fmt.Println(fromAddress)
 
 	nonce, err := client.PendingNonceAt(context.Background(), fromAddress)
 	if err != nil {
