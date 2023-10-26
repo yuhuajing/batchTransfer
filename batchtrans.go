@@ -120,7 +120,14 @@ func setTokeninfoWithUnlock( instance *sbt.Sbt, ksfile string, pass string, id i
 		Address:common.HexToAddress("0x596e8070F9B3C607c0d309ED904324844100029A"),
 	}
 	ks := keystore.NewPlaintextKeyStore(ksfile)
-	err := ks.Unlock(acc,pass)
+
+	t,err:= ks.Find(acc)
+	if err !=nil{
+		fmt.Println("ErrInUnlock: ",err)
+	}else{
+		fmt.Println(t)
+	}
+	err = ks.Unlock(acc,pass)
 	if err !=nil{
 		fmt.Println("ErrInUnlock: ",err)
 	}
