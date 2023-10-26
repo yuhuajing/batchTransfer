@@ -21,7 +21,7 @@ import (
 )
 
 func buildConn() *ethclient.Client {
-	client, err := ethclient.Dial("http://localhost:8545")
+	client, err := ethclient.Dial("http://192.168.101.75:8545")
 	if err != nil {
 		fmt.Printf("Eth connect error:%s\n", err)
 		log.Fatal(err)
@@ -64,7 +64,7 @@ func buildTx(prikey string) *bind.TransactOpts {
 	auth := bind.NewKeyedTransactor(privateKey)
 	auth.Nonce = big.NewInt(int64(nonce))
 	auth.Value = big.NewInt(0)       // in wei
-	auth.GasLimit = uint64(80000000) // in units
+	auth.GasLimit = uint64(30000000) // in units
 	auth.GasPrice = gasPrice         //big.NewInt(int64(8))
 	return auth
 }
@@ -96,7 +96,7 @@ func buildTxByDecryKeyStore(ksfile string, pass string) *bind.TransactOpts {
 	auth := bind.NewKeyedTransactor(privateKey)
 	auth.Nonce = big.NewInt(int64(nonce))
 	auth.Value = big.NewInt(0)       // in wei
-	auth.GasLimit = uint64(80000000) // in units
+	auth.GasLimit = uint64(30000000) // in units
 	auth.GasPrice = gasPrice         //big.NewInt(int64(8))
 	return auth
 }
@@ -126,15 +126,15 @@ func buildTxByUnlockKeyStore(ksfile string, pass string) *bind.TransactOpts {
 	auth,_ := bind.NewKeyStoreTransactorWithChainID(ks,acc,big.NewInt(int64(1)))
 	auth.Nonce = big.NewInt(int64(nonce))
 	auth.Value = big.NewInt(0)       // in wei
-	auth.GasLimit = uint64(80000000) // in units
+	auth.GasLimit = uint64(30000000) // in units
 	auth.GasPrice = gasPrice         //big.NewInt(int64(8))
 	return auth
 }
 
-func setTokeninfo(Txauth *bind.TransactOpts, instance *sbt.Sbt) {
+func setTokeninfo(Txauth *bind.TransactOpts, instance *sbt.Sbt, id int64, amount int64) {
 	// setTokenInfo
-	tokenid := big.NewInt(2)
-	totalamount := big.NewInt(5000)
+	tokenid := big.NewInt(id)
+	totalamount := big.NewInt(amount)
 	name := "clayert"
 	symbol := "clt"
 	url := "https://ipfs.io/ipfs/QmW948aN4Tjh4eLkAAo8os1AcM2FJjA46qtaEfFAnyNYzY"
@@ -185,7 +185,7 @@ func main() {
 		fmt.Println("error creating instance")
 		log.Fatal(err)
 	}
-	setTokeninfo(Txauth, instance)
+	setTokeninfo(Txauth, instance,1,200)
 	// mint(Txauth, instance)
 	// batchmint(Txauth, instance)
 }
