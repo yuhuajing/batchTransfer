@@ -10,6 +10,7 @@ import (
 	"log"
 	"main/sbt"
 	"math/big"
+	"io/ioutil"
 
 	"github.com/ethereum/go-ethereum/accounts"
 	"github.com/ethereum/go-ethereum/accounts/abi/bind"
@@ -41,6 +42,18 @@ func buildTx() *bind.TransactOpts {
 
 	ks := keystore.NewPlaintextKeyStore("/opt/etherData/keystore/UTC--2023-09-08T03-15-52.105540382Z--596e8070f9b3c607c0d309ed904324844100029a")
 	
+	keyjson, err := ioutil.ReadFile("/opt/etherData/keystore/UTC--2023-09-08T03-15-52.105540382Z--596e8070f9b3c607c0d309ed904324844100029a")
+	if err != nil {
+		panic(err)
+	}
+	key, err := keystore.DecryptKey(keyjson, "yu201219jing")
+	if err != nil {
+		panic(err)
+	}
+
+	address := key.Address.Hex()
+	fmt.Println(address)
+
 	acc:=accounts.Account{
 		Address:common.HexToAddress("0x596e8070F9B3C607c0d309ED904324844100029A"),
 
