@@ -41,9 +41,10 @@ func buildTx() *bind.TransactOpts {
 
 	ks := keystore.NewPlaintextKeyStore("/opt/etherData/keystore/UTC--2023-09-08T03-15-52.105540382Z--596e8070f9b3c607c0d309ed904324844100029a")
 	acc:=accounts.Account{
-		Address:common.HexToAddress("0x2d8Fac7B7295A2aBf75D49A534b3a86920de51B2"),
+		Address:common.HexToAddress("0x596e8070F9B3C607c0d309ED904324844100029A"),
 
 	}
+
 	ks.Unlock(acc,"yu201219jing")
 	
 
@@ -51,7 +52,7 @@ func buildTx() *bind.TransactOpts {
 	// if len(accounts) > 0{
 	// 	fmt.Println(accounts[0].Address)
 	// }
-	fromAddress := common.HexToAddress("0x2d8Fac7B7295A2aBf75D49A534b3a86920de51B2")
+	fromAddress := common.HexToAddress("0x596e8070F9B3C607c0d309ED904324844100029A")
 	//fmt.Println(fromAddress)
 
 	nonce, err := client.PendingNonceAt(context.Background(), fromAddress)
@@ -119,7 +120,7 @@ func main() {
 	client := buildConn()
 	defer client.Close()
 	Txauth := buildTx()
-	scaddress := common.HexToAddress("0xD0BF8353273cdBA469b1613c214FBBBf6765ecF3") // Smart Contract Address
+	scaddress := common.HexToAddress("0xe579aBE4a3B4BaB0b8E07918A3A95CB7cdD3F610") // Smart Contract Address
 	instance, err := sbt.NewSbt(scaddress, client)
 	if err != nil {
 		fmt.Println("error creating instance")
