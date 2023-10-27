@@ -156,9 +156,24 @@ func setTokeninfo(Txauth *bind.TransactOpts, instance *sbt.Sbt, id int64, amount
 	symbol := "clt"
 	url := "https://ipfs.io/ipfs/QmW948aN4Tjh4eLkAAo8os1AcM2FJjA46qtaEfFAnyNYzY"
 
+	ids,err:=instance.TokenIDs(nil);
+	if err != nil {
+		fmt.Println("error getting initialized tokenIDs: ", err)
+
+	}
+	
+	if len(ids) !=0{
+		for _,id :=range ids{
+			if id.Int64() == tokenid.Int64(){
+				fmt.Println("token already exists")
+				return
+		    }
+	    }
+	}
+
 	tx, err := instance.SettokenIDInfo(Txauth, tokenid, totalamount, name, symbol, url)
 	if err != nil {
-		fmt.Println("error creating tx")
+		fmt.Println("error creating tx: ", err)
 		log.Fatal(err)
 	}
 	fmt.Printf("tx sent: %s\n", tx.Hash().Hex())
