@@ -113,6 +113,17 @@ func setTokeninfo(Txauth *bind.TransactOpts, instance *sbt.Sbt, id int64, amount
 	fmt.Printf("tx sent: %s\n", tx.Hash().Hex())
 }
 
+func testKey(){
+	ks := keystore.NewKeyStore("/opt/etherData/keystore/UTC--2023-10-10T02-50-06.987871217Z--2d8fac7b7295a2abf75d49a534b3a86920de51b2", keystore.StandardScryptN, keystore.StandardScryptP)
+password := "yu201219jing"
+account, err := ks.NewAccount(password)
+if err != nil {
+  log.Fatal(err)
+}
+
+fmt.Println(account.Address.Hex())
+}
+
 func setTokeninfoWithUnlock( instance *sbt.Sbt, ksfile string, pass string, id int64, amount int64) {
 	client := buildConn()
 	defer client.Close()
@@ -192,19 +203,21 @@ func main() {
 	defer client.Close()
 	//prikey := "bebb5b73e288c580a6cee5070929ab3ff8985422d7a0bc45938faae5332e2e2f"
 	// Txauth := buildTx(prikey)
-	ketstore:="/opt/etherData/keystore/UTC--2023-10-10T02-50-06.987871217Z--2d8fac7b7295a2abf75d49a534b3a86920de51b2"
-	pass:="yu201219jing"
-	// Txauth :=buildTxByUnlockKeyStore(,)
-	// Txauth :=buildTxByDecryKeyStore("/opt/etherData/keystore/UTC--2023-09-08T03-15-52.105540382Z--596e8070f9b3c607c0d309ed904324844100029a","yu201219jing")
-	scaddress := common.HexToAddress("0xe579aBE4a3B4BaB0b8E07918A3A95CB7cdD3F610") // Smart Contract Address
-	instance, err := sbt.NewSbt(scaddress, client)
-	if err != nil {
-		fmt.Println("error creating instance")
-		log.Fatal(err)
-	}
+	// ketstore:="/opt/etherData/keystore/UTC--2023-10-10T02-50-06.987871217Z--2d8fac7b7295a2abf75d49a534b3a86920de51b2"
+	// pass:="yu201219jing"
+	// // Txauth :=buildTxByUnlockKeyStore(,)
+	// // Txauth :=buildTxByDecryKeyStore("/opt/etherData/keystore/UTC--2023-09-08T03-15-52.105540382Z--596e8070f9b3c607c0d309ed904324844100029a","yu201219jing")
+	// scaddress := common.HexToAddress("0xe579aBE4a3B4BaB0b8E07918A3A95CB7cdD3F610") // Smart Contract Address
+	// instance, err := sbt.NewSbt(scaddress, client)
+	// if err != nil {
+	// 	fmt.Println("error creating instance")
+	// 	log.Fatal(err)
+	// }
 	//setTokeninfo(Txauth, instance,2,200)
 	// mint(Txauth, instance)
 	// batchmint(Txauth, instance)
 
-	setTokeninfoWithUnlock( instance,ketstore,pass,2,200)
+	//setTokeninfoWithUnlock( instance,ketstore,pass,2,200)
+
+	testKey()
 }
