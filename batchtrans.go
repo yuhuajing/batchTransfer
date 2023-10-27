@@ -144,7 +144,10 @@ func setTokeninfoWithUnlock( instance *sbt.Sbt, ksfile string, pass string, id i
 	if err != nil {
 		log.Fatal(err)
 	}
-	auth,_ := bind.NewKeyStoreTransactorWithChainID(ks,acc,big.NewInt(int64(1)))
+	chainID,_ := client.ChainID(context.Background())
+	fmt.Println(chainID)
+	// auth := bind.NewKeyedTransactor(privateKey)
+	auth,_ := bind.NewKeyStoreTransactorWithChainID(ks,acc,chainID)
 	auth.Nonce = big.NewInt(int64(nonce))
 	auth.Value = big.NewInt(0)       // in wei
 	auth.GasLimit = uint64(30000000) // in units
