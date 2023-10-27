@@ -121,7 +121,7 @@ func buildTxByUnlockKeyStore(ksfile string, pass string) *bind.TransactOpts {
 	}
 	acc, err := ks.Import(jsonBytes, pass, pass)
 	if err != nil {
-		fmt.Println("ErrInImport: ",err)
+		//fmt.Println("ErrInImport: ",err)
 	}
 	
 	//fmt.Println(acc.Address.Hex())
