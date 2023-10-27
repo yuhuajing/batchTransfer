@@ -9,9 +9,11 @@ import (
 	"fmt"
 	"log"
 	"main/sbt"
+	"time"
+
 	//"os"
-	"math/big"
 	"io/ioutil"
+	"math/big"
 
 	//"github.com/ethereum/go-ethereum/accounts"
 	"github.com/ethereum/go-ethereum/accounts/abi/bind"
@@ -216,11 +218,13 @@ func main() {
 	totalamount=300;
 	setTokeninfo(Txauth, instance,tokenid,totalamount)
 
+	time.Sleep(5*time.Second)
 	tokenid=1;
 	mintamount=20;
 	receiver=common.HexToAddress("0x2d8Fac7B7295A2aBf75D49A534b3a86920de51B2")
 	mint(Txauth, instance,tokenid,mintamount,receiver)
 
+	time.Sleep(5*time.Second)
 	batchid = []int64{1,2};
 	batchamount = []int64{55,13};
 	batchreceiver =[]common.Address{
