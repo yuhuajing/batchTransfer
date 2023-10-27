@@ -208,23 +208,23 @@ func main() {
 	pass:="yu201219jing"
 	// Txauth :=buildTxByDecryKeyStore(ketstore,pass)
 	Txauth :=buildTxByUnlockKeyStore(ketstore,pass)
-	scaddress := common.HexToAddress("0x6e1484fCC0297e40cFe8705719C797Ea363403d7") // Smart Contract Address
+	scaddress := common.HexToAddress("0xF2AC45ca3ED21312BB81E72cAe8dc14Cba97214c") // Smart Contract Address
 	instance, err := sbt.NewSbt(scaddress, client)
 	if err != nil {
 		fmt.Println("error creating instance")
 		log.Fatal(err)
 	}
 
-	// tokenid=2;
-	// totalamount=300;
-	// setTokeninfo(Txauth, instance,tokenid,totalamount)
-
-	time.Sleep(5*time.Second)
-	Txauth =buildTxByUnlockKeyStore(ketstore,pass)
 	tokenid=1;
 	mintamount=20;
 	receiver=common.HexToAddress("0x2d8Fac7B7295A2aBf75D49A534b3a86920de51B2")
 	mint(Txauth, instance,tokenid,mintamount,receiver)
+
+	time.Sleep(5*time.Second)
+	Txauth =buildTxByUnlockKeyStore(ketstore,pass)
+	tokenid=2;
+	totalamount=300;
+	setTokeninfo(Txauth, instance,tokenid,totalamount)
 
 	time.Sleep(5*time.Second)
 	Txauth =buildTxByUnlockKeyStore(ketstore,pass)
