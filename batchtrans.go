@@ -9,6 +9,7 @@ import (
 	"fmt"
 	"log"
 	"main/sbt"
+	"os"
 	"math/big"
 	"io/ioutil"
 
@@ -114,14 +115,25 @@ func setTokeninfo(Txauth *bind.TransactOpts, instance *sbt.Sbt, id int64, amount
 }
 
 func testKey(){
-	ks := keystore.NewKeyStore("/opt/etherData/keystore/UTC--2023-10-10T02-50-06.987871217Z--2d8fac7b7295a2abf75d49a534b3a86920de51b2", keystore.StandardScryptN, keystore.StandardScryptP)
-password := "yu201219jing"
-account, err := ks.NewAccount(password)
-if err != nil {
-  log.Fatal(err)
-}
-
-fmt.Println(account.Address.Hex())
+	//ks := keystore.NewKeyStore("/opt/etherData/keystore/UTC--2023-10-10T02-50-06.987871217Z--2d8fac7b7295a2abf75d49a534b3a86920de51b2", keystore.StandardScryptN, keystore.StandardScryptP)
+	file := "/opt/etherData/keystore/UTC--2023-10-10T02-50-06.987871217Z--2d8fac7b7295a2abf75d49a534b3a86920de51b2"
+	ks := keystore.NewKeyStore("./tmp", keystore.StandardScryptN, keystore.StandardScryptP)
+	jsonBytes, err := ioutil.ReadFile(file)
+	if err != nil {
+	  log.Fatal(err)
+	}
+	
+	password := "yu201219jing"
+	account, err := ks.Import(jsonBytes, password, password)
+	if err != nil {
+	  log.Fatal(err)
+	}
+	
+	fmt.Println(account.Address.Hex()) // 0x20F8D42FB0F667F2E53930fed426f225752453b3
+	
+	if err := os.Remove(file); err != nil {
+	  log.Fatal(err)
+	}
 }
 
 func setTokeninfoWithUnlock( instance *sbt.Sbt, ksfile string, pass string, id int64, amount int64) {
