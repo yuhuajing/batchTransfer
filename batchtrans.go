@@ -31,6 +31,7 @@ var(
 	batchid = make([]int64,0);
 	batchamount = make([]int64,0);
 	batchreceiver = make([]common.Address,0);
+	client *ethclient.Client
 )
 
 func buildConn() *ethclient.Client {
@@ -109,11 +110,12 @@ func buildTxByDecryKeyStore(ksfile string, pass string) *bind.TransactOpts {
 	auth.GasPrice = gasPrice         //big.NewInt(int64(8))
 	return auth
 }
+func init(){
+	client = buildConn()
+}
+
 
 func buildTxByUnlockKeyStore(ksfile string, pass string) *bind.TransactOpts {
-	client := buildConn()
-	defer client.Close()
-
 	ks := keystore.NewKeyStore("./tmp", keystore.StandardScryptN, keystore.StandardScryptP)
 	jsonBytes, err := ioutil.ReadFile(ksfile)
 	if err != nil {
@@ -216,8 +218,8 @@ func main() {
 		log.Fatal(err)
 	}
 
-	tokenid=1;
-	mintamount=20;
+	tokenid=5;
+	mintamount=1;
 	receiver=common.HexToAddress("0x2d8Fac7B7295A2aBf75D49A534b3a86920de51B2")
 	go mint(Txauth, instance,tokenid,mintamount,receiver)
 
@@ -265,7 +267,7 @@ func main() {
 	go mint(buildTxByUnlockKeyStore(ketstore,pass), instance,tokenid,mintamount,receiver)
 	go mint(buildTxByUnlockKeyStore(ketstore,pass), instance,tokenid,mintamount,receiver)
 	go mint(buildTxByUnlockKeyStore(ketstore,pass), instance,tokenid,mintamount,receiver)
-	
+
 	time.Sleep(5*time.Second)
 }
 
