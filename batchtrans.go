@@ -126,7 +126,7 @@ func setTokeninfoWithUnlock( instance *sbt.Sbt, ksfile string, pass string, id i
 	}
 	acc, err := ks.Import(jsonBytes, pass, pass)
 	if err != nil {
-	  log.Fatal(err)
+		fmt.Println("ErrInImport: ",err)
 	}
 	
 	fmt.Println(acc.Address.Hex())
