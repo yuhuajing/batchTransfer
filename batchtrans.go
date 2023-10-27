@@ -200,19 +200,19 @@ func main() {
 	// tokenid=3;
 	// totalamount=300;
 	// setTokeninfo(Txauth, instance,tokenid,totalamount)
-	tokenid=1;
-	mintamount=20;
-	receiver=common.HexToAddress("0x2d8Fac7B7295A2aBf75D49A534b3a86920de51B2")
-	mint(Txauth, instance,tokenid,mintamount,receiver)
+	// tokenid=1;
+	// mintamount=20;
+	// receiver=common.HexToAddress("0x2d8Fac7B7295A2aBf75D49A534b3a86920de51B2")
+	// mint(Txauth, instance,tokenid,mintamount,receiver)
 
-	// batchid = []int64{1,2};
-	// batchamount = []int64{55,13};
-	// batchreceiver =[]common.Address{
-	// 	common.HexToAddress("0x2d8Fac7B7295A2aBf75D49A534b3a86920de51B2"),
-	// 	common.HexToAddress("0x596e8070F9B3C607c0d309ED904324844100029A"),
-	// 	//common.HexToAddress("0xe579aBE4a3B4BaB0b8E0791"),
-	// 	};
-	// batchmint(Txauth, instance,batchid,batchamount,batchreceiver)
+	batchid = []int64{1,2};
+	batchamount = []int64{55,13};
+	batchreceiver =[]common.Address{
+		common.HexToAddress("0x2d8Fac7B7295A2aBf75D49A534b3a86920de51B2"),
+		common.HexToAddress("0x596e8070F9B3C607c0d309ED904324844100029A"),
+		//common.HexToAddress("0xe579aBE4a3B4BaB0b8E0791"),
+		};
+	batchmint(Txauth, instance,batchid,batchamount,batchreceiver)
 }
 
 func tracferIntToBigInt(num []int64)(res[]*big.Int){
