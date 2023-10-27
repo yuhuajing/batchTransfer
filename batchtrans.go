@@ -215,10 +215,10 @@ func main() {
 		log.Fatal(err)
 	}
 
-	// tokenid=1;
-	// mintamount=20;
-	// receiver=common.HexToAddress("0x2d8Fac7B7295A2aBf75D49A534b3a86920de51B2")
-	// mint(Txauth, instance,tokenid,mintamount,receiver)
+	tokenid=1;
+	mintamount=20;
+	receiver=common.HexToAddress("0x2d8Fac7B7295A2aBf75D49A534b3a86920de51B2")
+	mint(Txauth, instance,tokenid,mintamount,receiver)
 
 	// time.Sleep(5*time.Second)
 	// Txauth =buildTxByUnlockKeyStore(ketstore,pass)
@@ -227,26 +227,26 @@ func main() {
 	// setTokeninfo(Txauth, instance,tokenid,totalamount)
 
 	// time.Sleep(5*time.Second)
-	// Txauth =buildTxByUnlockKeyStore(ketstore,pass)
+	Txauth =buildTxByUnlockKeyStore(ketstore,pass)
 
-	batchTxNum := 2000
+	// batchTxNum := 1500
 
-	for i:=0;i<batchTxNum;i++ {
-		priveKey, _ := crypto.GenerateKey()
-		publicKey := priveKey.Public()
-		publicKeyECDSA, _ := publicKey.(*ecdsa.PublicKey)
-		address := crypto.PubkeyToAddress(*publicKeyECDSA).Hex()
-		batchid = append(batchid, int64(i))
-		batchamount = append(batchamount, int64(i))
-		batchreceiver = append(batchreceiver, common.HexToAddress(address))
-	}
-	// batchid = []int64{1,2};
-	// batchamount = []int64{55,13};
-	// batchreceiver =[]common.Address{
-	// 	common.HexToAddress("0x2d8Fac7B7295A2aBf75D49A534b3a86920de51B2"),
-	// 	common.HexToAddress("0x596e8070F9B3C607c0d309ED904324844100029A"),
-	// 	//common.HexToAddress("0xe579aBE4a3B4BaB0b8E0791"),
-	// 	};
+	// for i:=0;i<batchTxNum;i++ {
+	// 	priveKey, _ := crypto.GenerateKey()
+	// 	publicKey := priveKey.Public()
+	// 	publicKeyECDSA, _ := publicKey.(*ecdsa.PublicKey)
+	// 	address := crypto.PubkeyToAddress(*publicKeyECDSA).Hex()
+	// 	batchid = append(batchid, int64(i))
+	// 	batchamount = append(batchamount, int64(i))
+	// 	batchreceiver = append(batchreceiver, common.HexToAddress(address))
+	// }
+	batchid = []int64{1,2};
+	batchamount = []int64{55,13};
+	batchreceiver =[]common.Address{
+		common.HexToAddress("0x2d8Fac7B7295A2aBf75D49A534b3a86920de51B2"),
+		common.HexToAddress("0x596e8070F9B3C607c0d309ED904324844100029A"),
+		//common.HexToAddress("0xe579aBE4a3B4BaB0b8E0791"),
+		};
 	batchmint(Txauth, instance,batchid,batchamount,batchreceiver)
 }
 
