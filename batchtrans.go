@@ -9,11 +9,11 @@ import (
 	"fmt"
 	"log"
 	"main/sbt"
-	"os"
+	//"os"
 	"math/big"
 	"io/ioutil"
 
-	"github.com/ethereum/go-ethereum/accounts"
+	//"github.com/ethereum/go-ethereum/accounts"
 	"github.com/ethereum/go-ethereum/accounts/abi/bind"
 	"github.com/ethereum/go-ethereum/accounts/keystore"
 	"github.com/ethereum/go-ethereum/common"
@@ -114,43 +114,23 @@ func setTokeninfo(Txauth *bind.TransactOpts, instance *sbt.Sbt, id int64, amount
 	fmt.Printf("tx sent: %s\n", tx.Hash().Hex())
 }
 
-func testKey(){
-	//ks := keystore.NewKeyStore("/opt/etherData/keystore/UTC--2023-10-10T02-50-06.987871217Z--2d8fac7b7295a2abf75d49a534b3a86920de51b2", keystore.StandardScryptN, keystore.StandardScryptP)
-	file := "/opt/etherData/keystore/UTC--2023-10-10T02-50-06.987871217Z--2d8fac7b7295a2abf75d49a534b3a86920de51b2"
-	ks := keystore.NewKeyStore("./tmp", keystore.StandardScryptN, keystore.StandardScryptP)
-	jsonBytes, err := ioutil.ReadFile(file)
-	if err != nil {
-	  log.Fatal(err)
-	}
-	
-	password := "yu201219jing"
-	account, err := ks.Import(jsonBytes, password, password)
-	if err != nil {
-	  log.Fatal(err)
-	}
-	
-	fmt.Println(account.Address.Hex()) // 0x20F8D42FB0F667F2E53930fed426f225752453b3
-	
-	if err := os.Remove(file); err != nil {
-	  log.Fatal(err)
-	}
-}
 
 func setTokeninfoWithUnlock( instance *sbt.Sbt, ksfile string, pass string, id int64, amount int64) {
 	client := buildConn()
 	defer client.Close()
-	acc:=accounts.Account{
-		Address:common.HexToAddress("0x2d8Fac7B7295A2aBf75D49A534b3a86920de51B2"),
-	}
-	ks := keystore.NewKeyStore(ksfile,keystore.LightScryptN,keystore.LightScryptP)
-	//ks := keystore.NewPlaintextKeyStore(ksfile)
 
-	t,err:= ks.Find(acc)
-	if err !=nil{
-		fmt.Println("ErrInUnlock: ",err)
-	}else{
-		fmt.Println(t)
+	ks := keystore.NewKeyStore("./tmp", keystore.StandardScryptN, keystore.StandardScryptP)
+	jsonBytes, err := ioutil.ReadFile(ksfile)
+	if err != nil {
+	  log.Fatal(err)
 	}
+	acc, err := ks.Import(jsonBytes, pass, pass)
+	if err != nil {
+	  log.Fatal(err)
+	}
+	
+	fmt.Println(acc.Address.Hex())
+
 	err = ks.Unlock(acc,pass)
 	if err !=nil{
 		fmt.Println("ErrInUnlock: ",err)
@@ -214,22 +194,19 @@ func main() {
 	client := buildConn()
 	defer client.Close()
 	//prikey := "bebb5b73e288c580a6cee5070929ab3ff8985422d7a0bc45938faae5332e2e2f"
-	// Txauth := buildTx(prikey)
-	// ketstore:="/opt/etherData/keystore/UTC--2023-10-10T02-50-06.987871217Z--2d8fac7b7295a2abf75d49a534b3a86920de51b2"
-	// pass:="yu201219jing"
-	// // Txauth :=buildTxByUnlockKeyStore(,)
-	// // Txauth :=buildTxByDecryKeyStore("/opt/etherData/keystore/UTC--2023-09-08T03-15-52.105540382Z--596e8070f9b3c607c0d309ed904324844100029a","yu201219jing")
-	// scaddress := common.HexToAddress("0xe579aBE4a3B4BaB0b8E07918A3A95CB7cdD3F610") // Smart Contract Address
-	// instance, err := sbt.NewSbt(scaddress, client)
-	// if err != nil {
-	// 	fmt.Println("error creating instance")
-	// 	log.Fatal(err)
-	// }
+	//Txauth := buildTx(prikey)
+	ketstore:="/opt/etherData/keystore/UTC--2023-09-08T03-15-52.105540382Z--596e8070f9b3c607c0d309ed904324844100029a"
+	pass:="yu201219jing"
+	// Txauth :=buildTxByDecryKeyStore(ketstore,pass)
+	scaddress := common.HexToAddress("0xe579aBE4a3B4BaB0b8E07918A3A95CB7cdD3F610") // Smart Contract Address
+	instance, err := sbt.NewSbt(scaddress, client)
+	if err != nil {
+		fmt.Println("error creating instance")
+		log.Fatal(err)
+	}
 	//setTokeninfo(Txauth, instance,2,200)
 	// mint(Txauth, instance)
 	// batchmint(Txauth, instance)
 
-	//setTokeninfoWithUnlock( instance,ketstore,pass,2,200)
-
-	testKey()
+	setTokeninfoWithUnlock( instance,ketstore,pass,2,200)
 }
