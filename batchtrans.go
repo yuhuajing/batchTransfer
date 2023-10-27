@@ -21,6 +21,16 @@ import (
 	"github.com/ethereum/go-ethereum/ethclient"
 )
 
+var(
+	tokenid=int64(0);
+	totalamount=int64(0);
+	mintamount=int64(0);
+	receiver = common.HexToAddress("0");
+	batchid = make([]int64,0);
+	batchamount = make([]int64,0);
+	batchreceiver = make([]common.Address,0);
+)
+
 func buildConn() *ethclient.Client {
 	client, err := ethclient.Dial("http://localhost:8545")
 	if err != nil {
@@ -98,24 +108,7 @@ func buildTxByDecryKeyStore(ksfile string, pass string) *bind.TransactOpts {
 	return auth
 }
 
-func setTokeninfo(Txauth *bind.TransactOpts, instance *sbt.Sbt, id int64, amount int64) {
-	// setTokenInfo
-	tokenid := big.NewInt(id)
-	totalamount := big.NewInt(amount)
-	name := "clayert"
-	symbol := "clt"
-	url := "https://ipfs.io/ipfs/QmW948aN4Tjh4eLkAAo8os1AcM2FJjA46qtaEfFAnyNYzY"
-
-	tx, err := instance.SettokenIDInfo(Txauth, tokenid, totalamount, name, symbol, url)
-	if err != nil {
-		fmt.Println("error creating tx")
-		log.Fatal(err)
-	}
-	fmt.Printf("tx sent: %s\n", tx.Hash().Hex())
-}
-
-
-func setTokeninfoWithUnlock( instance *sbt.Sbt, ksfile string, pass string, id int64, amount int64) {
+func buildTxByUnlockKeyStore(ksfile string, pass string) *bind.TransactOpts {
 	client := buildConn()
 	defer client.Close()
 
@@ -152,6 +145,10 @@ func setTokeninfoWithUnlock( instance *sbt.Sbt, ksfile string, pass string, id i
 	auth.Value = big.NewInt(0)       // in wei
 	auth.GasLimit = uint64(30000000) // in units
 	auth.GasPrice = gasPrice         //big.NewInt(int64(8))
+	return auth
+}
+
+func setTokeninfo(Txauth *bind.TransactOpts, instance *sbt.Sbt, id int64, amount int64) {
 	// setTokenInfo
 	tokenid := big.NewInt(id)
 	totalamount := big.NewInt(amount)
@@ -159,7 +156,7 @@ func setTokeninfoWithUnlock( instance *sbt.Sbt, ksfile string, pass string, id i
 	symbol := "clt"
 	url := "https://ipfs.io/ipfs/QmW948aN4Tjh4eLkAAo8os1AcM2FJjA46qtaEfFAnyNYzY"
 
-	tx, err := instance.SettokenIDInfo(auth, tokenid, totalamount, name, symbol, url)
+	tx, err := instance.SettokenIDInfo(Txauth, tokenid, totalamount, name, symbol, url)
 	if err != nil {
 		fmt.Println("error creating tx")
 		log.Fatal(err)
@@ -167,12 +164,8 @@ func setTokeninfoWithUnlock( instance *sbt.Sbt, ksfile string, pass string, id i
 	fmt.Printf("tx sent: %s\n", tx.Hash().Hex())
 }
 
-func mint(Txauth *bind.TransactOpts, instance *sbt.Sbt) {
-	account := common.HexToAddress("")
-	id := big.NewInt(1)
-	amount := big.NewInt(20)
-
-	tx, err := instance.Mint(Txauth, account, id, amount)
+func mint(Txauth *bind.TransactOpts, instance *sbt.Sbt,tokenid int64,mintamount int64,receiver common.Address) {
+	tx, err := instance.Mint(Txauth, receiver, big.NewInt(tokenid), big.NewInt(mintamount))
 	if err != nil {
 		fmt.Println("error creating tx")
 		log.Fatal(err)
@@ -180,12 +173,8 @@ func mint(Txauth *bind.TransactOpts, instance *sbt.Sbt) {
 	fmt.Printf("tx sent: %s\n", tx.Hash().Hex())
 }
 
-func batchmint(Txauth *bind.TransactOpts, instance *sbt.Sbt) {
-	account := []common.Address{common.HexToAddress("")}
-	id := []*big.Int{big.NewInt(1)}
-	amount := []*big.Int{big.NewInt(20)}
-
-	tx, err := instance.Batchmint(Txauth, account, id, amount)
+func batchmint(Txauth *bind.TransactOpts, instance *sbt.Sbt,batchid []int64,batchamount []int64,batchreceiver []common.Address) {
+	tx, err := instance.Batchmint(Txauth, batchreceiver, tracferIntToBigInt(batchid), tracferIntToBigInt(batchamount))
 	if err != nil {
 		fmt.Println("error creating tx")
 		log.Fatal(err)
@@ -201,15 +190,33 @@ func main() {
 	ketstore:="/opt/etherData/keystore/UTC--2023-09-08T03-15-52.105540382Z--596e8070f9b3c607c0d309ed904324844100029a"
 	pass:="yu201219jing"
 	// Txauth :=buildTxByDecryKeyStore(ketstore,pass)
+	Txauth :=buildTxByUnlockKeyStore(ketstore,pass)
 	scaddress := common.HexToAddress("0xe579aBE4a3B4BaB0b8E07918A3A95CB7cdD3F610") // Smart Contract Address
 	instance, err := sbt.NewSbt(scaddress, client)
 	if err != nil {
 		fmt.Println("error creating instance")
 		log.Fatal(err)
 	}
-	//setTokeninfo(Txauth, instance,2,200)
-	// mint(Txauth, instance)
-	// batchmint(Txauth, instance)
+	tokenid=3;
+	totalamount=300;
+	setTokeninfo(Txauth, instance,tokenid,totalamount)
+	tokenid=3;
+	mintamount=20;
+	receiver=common.HexToAddress("0xe579aBE4a3B4BaB0b8E07918")
+	mint(Txauth, instance,tokenid,mintamount,receiver)
+	batchid = []int64{1,2,3};
+	batchamount = []int64{20,13,23};
+	batchreceiver =[]common.Address{
+		common.HexToAddress("0xe579aBE4a3B4BaB0b8E0791"),
+		common.HexToAddress("0xe579aBE4a3B4BaB0b8E0791"),
+		common.HexToAddress("0xe579aBE4a3B4BaB0b8E0791"),};
+	batchmint(Txauth, instance,batchid,batchamount,batchreceiver)
+}
 
-	setTokeninfoWithUnlock( instance,ketstore,pass,2,200)
+func tracferIntToBigInt(num []int64)(res[]*big.Int){
+res = make([]*big.Int, 0)
+ for _, v := range num{
+res = append(res, big.NewInt(v))
+}
+return res
 }
