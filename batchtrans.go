@@ -250,6 +250,9 @@ func main() {
 	go batchmint(buildTxByUnlockKeyStore(ketstore,pass), instance,batchid,batchamount,batchreceiver)
 
 	go mint(buildTxByUnlockKeyStore(ketstore,pass), instance,tokenid,mintamount,receiver)
+	go mint(buildTxByUnlockKeyStore(ketstore,pass), instance,tokenid,mintamount,receiver)
+	go mint(buildTxByUnlockKeyStore(ketstore,pass), instance,tokenid,mintamount,receiver)
+	go mint(buildTxByUnlockKeyStore(ketstore,pass), instance,tokenid,mintamount,receiver)
 	time.Sleep(5*time.Second)
 }
 
