@@ -289,12 +289,12 @@
 		"inputs": [
 			{
 				"internalType": "address[]",
-				"name": "account",
+				"name": "receiver",
 				"type": "address[]"
 			},
 			{
 				"internalType": "uint256[]",
-				"name": "id",
+				"name": "tokenid",
 				"type": "uint256[]"
 			},
 			{
@@ -312,12 +312,12 @@
 		"inputs": [
 			{
 				"internalType": "uint256",
-				"name": "id",
+				"name": "tokenid",
 				"type": "uint256"
 			},
 			{
 				"internalType": "uint256",
-				"name": "value",
+				"name": "amount",
 				"type": "uint256"
 			}
 		],
@@ -443,12 +443,12 @@
 		"inputs": [
 			{
 				"internalType": "address",
-				"name": "account",
+				"name": "receiver",
 				"type": "address"
 			},
 			{
 				"internalType": "uint256",
-				"name": "id",
+				"name": "tokenid",
 				"type": "uint256"
 			},
 			{
@@ -458,6 +458,19 @@
 			}
 		],
 		"name": "mint",
+		"outputs": [],
+		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "uint256",
+				"name": "tokenid",
+				"type": "uint256"
+			}
+		],
+		"name": "openMint",
 		"outputs": [],
 		"stateMutability": "nonpayable",
 		"type": "function"
@@ -792,7 +805,7 @@
 		"inputs": [
 			{
 				"internalType": "uint256",
-				"name": "id",
+				"name": "tokenid",
 				"type": "uint256"
 			}
 		],
