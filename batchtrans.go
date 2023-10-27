@@ -124,7 +124,7 @@ func buildTxByUnlockKeyStore(ksfile string, pass string) *bind.TransactOpts {
 		fmt.Println("ErrInImport: ",err)
 	}
 	
-	fmt.Println(acc.Address.Hex())
+	//fmt.Println(acc.Address.Hex())
 
 	err = ks.Unlock(acc,pass)
 	if err !=nil{
@@ -135,12 +135,13 @@ func buildTxByUnlockKeyStore(ksfile string, pass string) *bind.TransactOpts {
 	if err != nil {
 		log.Fatal(err)
 	}
+	fmt.Println(nonce)
 	gasPrice, err := client.SuggestGasPrice(context.Background())
 	if err != nil {
 		log.Fatal(err)
 	}
 	chainID,_ := client.ChainID(context.Background())
-	fmt.Println(chainID)
+	//fmt.Println(chainID)
 	// auth := bind.NewKeyedTransactor(privateKey)
 	auth,_ := bind.NewKeyStoreTransactorWithChainID(ks,acc,chainID)
 	auth.Nonce = big.NewInt(int64(nonce))
