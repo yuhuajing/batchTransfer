@@ -117,7 +117,7 @@ func setTokeninfoWithUnlock( instance *sbt.Sbt, ksfile string, pass string, id i
 	client := buildConn()
 	defer client.Close()
 	acc:=accounts.Account{
-		Address:common.HexToAddress("0x596e8070F9B3C607c0d309ED904324844100029A"),
+		Address:common.HexToAddress("0x2d8Fac7B7295A2aBf75D49A534b3a86920de51B2"),
 	}
 	ks := keystore.NewKeyStore(ksfile,keystore.LightScryptN,keystore.LightScryptP)
 	//ks := keystore.NewPlaintextKeyStore(ksfile)
@@ -192,7 +192,7 @@ func main() {
 	defer client.Close()
 	//prikey := "bebb5b73e288c580a6cee5070929ab3ff8985422d7a0bc45938faae5332e2e2f"
 	// Txauth := buildTx(prikey)
-	ketstore:="/opt/etherData/keystore/UTC--2023-09-08T03-15-52.105540382Z--596e8070f9b3c607c0d309ed904324844100029a"
+	ketstore:="/opt/etherData/keystore/UTC--2023-10-10T02-50-06.987871217Z--2d8fac7b7295a2abf75d49a534b3a86920de51b2"
 	pass:="yu201219jing"
 	// Txauth :=buildTxByUnlockKeyStore(,)
 	// Txauth :=buildTxByDecryKeyStore("/opt/etherData/keystore/UTC--2023-09-08T03-15-52.105540382Z--596e8070f9b3c607c0d309ed904324844100029a","yu201219jing")
