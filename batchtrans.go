@@ -128,7 +128,7 @@ func buildTxByUnlockKeyStore(ksfile string, pass string) *bind.TransactOpts {
 
 	err = ks.Unlock(acc,pass)
 	if err !=nil{
-		fmt.Println("ErrInUnlock: ",err)
+		//fmt.Println("ErrInUnlock: ",err)
 	}
 
 	nonce, err := client.PendingNonceAt(context.Background(), acc.Address)
