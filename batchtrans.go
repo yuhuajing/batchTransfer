@@ -228,7 +228,6 @@ func main() {
 	// setTokeninfo(Txauth, instance,tokenid,totalamount)
 
 	// time.Sleep(5*time.Second)
-	Txauth2 :=buildTxByUnlockKeyStore(ketstore,pass)
 
 	// batchTxNum := 1500
 
@@ -248,8 +247,9 @@ func main() {
 		common.HexToAddress("0x596e8070F9B3C607c0d309ED904324844100029A"),
 		//common.HexToAddress("0xe579aBE4a3B4BaB0b8E0791"),
 		};
-	go batchmint(Txauth2, instance,batchid,batchamount,batchreceiver)
+	go batchmint(buildTxByUnlockKeyStore(ketstore,pass), instance,batchid,batchamount,batchreceiver)
 
+	go mint(buildTxByUnlockKeyStore(ketstore,pass), instance,tokenid,mintamount,receiver)
 	time.Sleep(5*time.Second)
 }
 
