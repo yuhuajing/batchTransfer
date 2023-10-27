@@ -158,20 +158,20 @@ func setTokeninfo(Txauth *bind.TransactOpts, instance *sbt.Sbt, id int64, amount
 	symbol := "clt"
 	url := "https://ipfs.io/ipfs/QmW948aN4Tjh4eLkAAo8os1AcM2FJjA46qtaEfFAnyNYzY"
 
-	ids,err:=instance.TokenIDs(nil);
-	if err != nil {
-		fmt.Println("error getting initialized tokenIDs: ", err)
+	// ids,err:=instance.TokenIDs(nil);
+	// if err != nil {
+	// 	fmt.Println("error getting initialized tokenIDs: ", err)
 
-	}
+	// }
 	
-	if len(ids) !=0{
-		for _,id :=range ids{
-			if id.Int64() == tokenid.Int64(){
-				fmt.Println("token already exists")
-				return
-		    }
-	    }
-	}
+	// if len(ids) !=0{
+	// 	for _,id :=range ids{
+	// 		if id.Int64() == tokenid.Int64(){
+	// 			fmt.Println("token already exists")
+	// 			return
+	// 	    }
+	//     }
+	// }
 
 	tx, err := instance.SettokenIDInfo(Txauth, tokenid, totalamount, name, symbol, url)
 	if err != nil {
@@ -214,17 +214,20 @@ func main() {
 		fmt.Println("error creating instance")
 		log.Fatal(err)
 	}
-	tokenid=2;
-	totalamount=300;
-	setTokeninfo(Txauth, instance,tokenid,totalamount)
+
+	// tokenid=2;
+	// totalamount=300;
+	// setTokeninfo(Txauth, instance,tokenid,totalamount)
 
 	time.Sleep(5*time.Second)
+	Txauth =buildTxByUnlockKeyStore(ketstore,pass)
 	tokenid=1;
 	mintamount=20;
 	receiver=common.HexToAddress("0x2d8Fac7B7295A2aBf75D49A534b3a86920de51B2")
 	mint(Txauth, instance,tokenid,mintamount,receiver)
 
 	time.Sleep(5*time.Second)
+	Txauth =buildTxByUnlockKeyStore(ketstore,pass)
 	batchid = []int64{1,2};
 	batchamount = []int64{55,13};
 	batchreceiver =[]common.Address{
