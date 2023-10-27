@@ -242,7 +242,7 @@ func main() {
 	// 	batchamount = append(batchamount, int64(i))
 	// 	batchreceiver = append(batchreceiver, common.HexToAddress(address))
 	// }
-	batchid = []int64{1,2};
+	batchid = []int64{1,9};
 	batchamount = []int64{55,13};
 	batchreceiver =[]common.Address{
 		common.HexToAddress("0x2d8Fac7B7295A2aBf75D49A534b3a86920de51B2"),
