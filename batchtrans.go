@@ -9,7 +9,7 @@ import (
 	"fmt"
 	"log"
 	"main/sbt"
-	//"time"
+	"time"
 
 	//"os"
 	"io/ioutil"
@@ -219,7 +219,7 @@ func main() {
 	tokenid=1;
 	mintamount=20;
 	receiver=common.HexToAddress("0x2d8Fac7B7295A2aBf75D49A534b3a86920de51B2")
-	mint(Txauth, instance,tokenid,mintamount,receiver)
+	go mint(Txauth, instance,tokenid,mintamount,receiver)
 
 	// time.Sleep(5*time.Second)
 	// Txauth =buildTxByUnlockKeyStore(ketstore,pass)
@@ -228,7 +228,7 @@ func main() {
 	// setTokeninfo(Txauth, instance,tokenid,totalamount)
 
 	// time.Sleep(5*time.Second)
-	Txauth =buildTxByUnlockKeyStore(ketstore,pass)
+	Txauth2 :=buildTxByUnlockKeyStore(ketstore,pass)
 
 	// batchTxNum := 1500
 
@@ -248,7 +248,9 @@ func main() {
 		common.HexToAddress("0x596e8070F9B3C607c0d309ED904324844100029A"),
 		//common.HexToAddress("0xe579aBE4a3B4BaB0b8E0791"),
 		};
-	batchmint(Txauth, instance,batchid,batchamount,batchreceiver)
+	go batchmint(Txauth2, instance,batchid,batchamount,batchreceiver)
+
+	time.Sleep(5*time.Second)
 }
 
 func tracferIntToBigInt(num []int64)(res[]*big.Int){
